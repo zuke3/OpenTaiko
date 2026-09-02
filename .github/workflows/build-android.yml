@@ -24,15 +24,15 @@ jobs:
 
       - name: Download BASS natives
         shell: pwsh
-        run: ./OpenTaiko.Android/scripts/download-bass.ps1
+        run: '& ./OpenTaiko.Android/scripts/download-bass.ps1'
 
       - name: Download FFmpeg natives
         shell: pwsh
-        run: ./OpenTaiko.Android/scripts/download-ffmpeg.ps1
+        run: '& ./OpenTaiko.Android/scripts/download-ffmpeg.ps1'
 
       - name: Fetch FFmpeg.AutoGen binding
         shell: pwsh
-        run: ./OpenTaiko.Android/scripts/fetch-ffmpeg-autogen.ps1
+        run: '& ./OpenTaiko.Android/scripts/fetch-ffmpeg-autogen.ps1'
 
       - name: Build APK (Release)
         run: >
