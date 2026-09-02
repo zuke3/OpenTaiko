@@ -1,0 +1,48 @@
+name: Build Android APK
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Install Android workload
+        run: dotnet workload install android
+
+      - name: Setup JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Download BASS natives
+        shell: pwsh
+        run: ./OpenTaiko.Android/scripts/download-bass.ps1
+
+      - name: Download FFmpeg natives
+        shell: pwsh
+        run: ./OpenTaiko.Android/scripts/download-ffmpeg.ps1
+
+      - name: Fetch FFmpeg.AutoGen binding
+        shell: pwsh
+        run: ./OpenTaiko.Android/scripts/fetch-ffmpeg-autogen.ps1
+
+      - name: Build APK (Release)
+        run: >
+          dotnet build OpenTaiko.Android/OpenTaiko.Android.csproj
+          -c Release -f net8.0-android
+          -p:UseVendoredFFmpeg=true
+          -p:Optimize=false
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: OpenTaiko-Android-apk
+          path: '**/*.apk'
